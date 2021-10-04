@@ -4,6 +4,15 @@ import javax.swing.Timer;
 
 public class GameDisplay extends JPanel implements Listeners.MouseListener.MouseObserver, Listeners.KeyListener.KeyObserver{
 
+    private GameLogic logic;
+    private int WIDTH = 800;
+    private int HEIGHT = 800;
+    private int SIZE = 800;
+    private int LEFT_OFFSET = 0;
+    private int TOP_OFFSET = 0;
+
+    private static final int BOARD_SIZE = 13;
+
     public GameDisplay(){
         super();
         setSize(800,800);
@@ -15,68 +24,63 @@ public class GameDisplay extends JPanel implements Listeners.MouseListener.Mouse
 
     @Override
     public void paint(Graphics graphics) {
+        //Call super.paint and cast graphics to Graphics2D
         super.paint(graphics);
         Graphics2D g = (Graphics2D)graphics;
 
-        final int WIDTH = getWidth();
-        final int HEIGHT = getHeight();
-        final int SIZE = Math.min(WIDTH,HEIGHT);
-        final int LEFT_OFFSET = (WIDTH - SIZE) / 2;
-        final int TOP_OFFSET = (HEIGHT - SIZE) / 2;
+        //Recalculate dimensions
+        WIDTH = getWidth();
+        HEIGHT = getHeight();
+        SIZE = Math.min(WIDTH,HEIGHT);
+        LEFT_OFFSET = (WIDTH - SIZE) / 2;
+        TOP_OFFSET = (HEIGHT - SIZE) / 2;
 
+        //Paint board background
         g.setColor(Color.WHITE);
         g.fillRect(LEFT_OFFSET,TOP_OFFSET,SIZE,SIZE);
 
-        
-    }
 
-    @Override
-    public void onKeyPressed(int keyCode) {
-        
     }
-
-    @Override
-    public void onKeyReleased(int keyCode) {
-        
-    }
-
+    
     @Override
     public void onKeyTyped(int keyCode) {
-                
+        logic.onKey(keyCode);
     }
 
     @Override
     public void onMouseClick(int x, int y, Listeners.MouseListener.Button b) {
-                
+        logic.click(
+            BOARD_SIZE * (x - LEFT_OFFSET) / SIZE,
+            BOARD_SIZE * (y - TOP_OFFSET ) / SIZE
+        );
     }
 
-    @Override
-    public void onMouseWheel(int wheelRotation) {
-                
-    }
+    //#region unused methods from Mouse/Key Observer
 
     @Override
-    public void onMouseMove(int x, int y) {
-                
-    }
+    public void onKeyPressed(int keyCode) {/*Empty*/}
 
     @Override
-    public void onMouseDown(int x, int y, Listeners.MouseListener.Button b) {
-                
-    }
+    public void onKeyReleased(int keyCode) {/*Empty*/}
+
 
     @Override
-    public void onMouseUp(int x, int y, Listeners.MouseListener.Button b) {
-                
-    }
+    public void onMouseWheel(int wheelRotation) {/*Empty*/}
 
     @Override
-    public void onMouseEntered() {
-                
-    }
+    public void onMouseMove(int x, int y) {/*Empty*/}
 
     @Override
-    public void onMouseExited() {
-                
-    }
+    public void onMouseDown(int x, int y, Listeners.MouseListener.Button b) {/*Empty*/}
+
+    @Override
+    public void onMouseUp(int x, int y, Listeners.MouseListener.Button b) {/*Empty*/}
+
+    @Override
+    public void onMouseEntered() {/*Empty*/}
+
+    @Override
+    public void onMouseExited() {/*Empty*/}
+
+    //#endregion
 }
