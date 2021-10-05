@@ -4,22 +4,21 @@ import javax.swing.Timer;
 
 public class GameDisplay extends JPanel implements Listeners.MouseListener.MouseObserver, Listeners.KeyListener.KeyObserver{
 
-    private GameLogic logic;
-    private int WIDTH = 800;
-    private int HEIGHT = 800;
+    private transient GameLogic logic;
     private int SIZE = 800;
     private int LEFT_OFFSET = 0;
     private int TOP_OFFSET = 0;
 
-    private static final int BOARD_SIZE = 13;
-
     public GameDisplay(){
         super();
+
+        logic = new GameLogic(this);
+
         setSize(800,800);
         setBackground(Color.BLACK);
         setVisible(true);
 
-        new Timer(10, e -> {repaint();}).start();
+        new Timer(10, e -> repaint()).start();
     }
 
     @Override
@@ -29,19 +28,48 @@ public class GameDisplay extends JPanel implements Listeners.MouseListener.Mouse
         Graphics2D g = (Graphics2D)graphics;
 
         //Recalculate dimensions
-        WIDTH = getWidth();
-        HEIGHT = getHeight();
+        final int WIDTH = getWidth();
+        final int HEIGHT = getHeight();
         SIZE = Math.min(WIDTH,HEIGHT);
         LEFT_OFFSET = (WIDTH - SIZE) / 2;
         TOP_OFFSET = (HEIGHT - SIZE) / 2;
 
+        final int BOARD_SIZE = GameLogic.BOARD_SIZE;
+        final int PIECE_WIDTH = SIZE / BOARD_SIZE;
+
         //Paint board background
-        g.setColor(Color.WHITE);
+        g.setColor(new Color(200,200,200));
         g.fillRect(LEFT_OFFSET,TOP_OFFSET,SIZE,SIZE);
 
+        g.setColor(Color.BLACK);
 
+        //Draw grid
+        for(int i = 1; i < BOARD_SIZE; i++){
+            int offset =  i * SIZE / BOARD_SIZE;
+            g.drawLine(LEFT_OFFSET, TOP_OFFSET + offset, WIDTH - LEFT_OFFSET, TOP_OFFSET + offset);
+            g.drawLine(LEFT_OFFSET + offset, TOP_OFFSET, LEFT_OFFSET + offset, HEIGHT - TOP_OFFSET);
+        }
+
+        final int PADDING = SIZE / BOARD_SIZE / 7;
+        //Draw pieces
+        for(int i = 0; i < GameLogic.BOARD_SIZE; i++){
+            for(int j = 0; j < GameLogic.BOARD_SIZE; j++){
+                int circleX = LEFT_OFFSET + i * SIZE / BOARD_SIZE;
+                int circleY = TOP_OFFSET  + j * SIZE / BOARD_SIZE;
+                
+                switch(logic.getPieceAt(i, j)){
+                    case 1:
+                        g.drawOval(circleX, circleY, PIECE_WIDTH, PIECE_WIDTH);
+                        break;
+                    case 2:
+                    g.fillOval(circleX, circleY, PIECE_WIDTH, PIECE_WIDTH);
+                        break;
+                    default:break;
+                }
+            }
+        }
     }
-    
+
     @Override
     public void onKeyTyped(int keyCode) {
         logic.onKey(keyCode);
@@ -50,8 +78,8 @@ public class GameDisplay extends JPanel implements Listeners.MouseListener.Mouse
     @Override
     public void onMouseClick(int x, int y, Listeners.MouseListener.Button b) {
         logic.click(
-            BOARD_SIZE * (x - LEFT_OFFSET) / SIZE,
-            BOARD_SIZE * (y - TOP_OFFSET ) / SIZE
+            GameLogic.BOARD_SIZE * (x - LEFT_OFFSET) / SIZE,
+            GameLogic.BOARD_SIZE * (y - TOP_OFFSET) / SIZE
         );
     }
 

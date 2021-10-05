@@ -221,15 +221,7 @@ def shadowed_text(text, size, shadow, offset=0, reversed=False):  # function for
 	size = int(size)
 	shadow = int(shadow)
 	offset = int(offset)
-	if not reversed:
-		#draw_text(screen, text, size, WIDTH / 2 + shadow, HEIGHT / 2 + offset, (30, 10, 230))
-		draw_text(screen, text, size, WIDTH / 2, HEIGHT / 2 + offset, (150, 10, 150))
-		#draw_text(screen, text, size, WIDTH / 2 - shadow, HEIGHT / 2 + offset, (230, 10, 30))
-	else:
-		#draw_text(screen, text, size, WIDTH / 2 + shadow, HEIGHT / 2 + offset, (230, 10, 30))
-		draw_text(screen, text, size, WIDTH / 2, HEIGHT / 2 + offset, (150, 10, 150))
-		#draw_text(screen, text, size, WIDTH / 2 - shadow, HEIGHT / 2 + offset, (30, 10, 230))
-
+	draw_text(screen, text, size, WIDTH / 2, HEIGHT / 2 + offset, (150, 10, 150))
 
 b = Board(SIZE)
 render(b)
@@ -268,8 +260,7 @@ while running:  # game loop
 					b.set(inp, 'X')  # records move
 					render(b)  # draws board
 					waiting = False  # moves on
-				except:
-					pass  # otherwise retry
+				except: pass  # otherwise retry
 			if event.type == pygame.VIDEORESIZE:  # screen resizing
 				surface = pygame.display.set_mode((event.w, event.h), pygame.RESIZABLE)
 				WIDTH = event.w

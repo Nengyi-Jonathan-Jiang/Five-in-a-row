@@ -10,7 +10,7 @@ public class Main extends JFrame {
         GameDisplay g = new GameDisplay();
         Listeners.KeyListener kl = new Listeners.KeyListener(this);
         kl.addObserver(g);
-        new Listeners.MouseListener(this, g);
+        new Listeners.MouseListener(g, g);
 
         getContentPane().add(g);
 
