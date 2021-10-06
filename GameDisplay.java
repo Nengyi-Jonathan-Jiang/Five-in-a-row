@@ -26,6 +26,7 @@ public class GameDisplay extends JPanel implements Listeners.MouseListener.Mouse
         //Call super.paint and cast graphics to Graphics2D
         super.paint(graphics);
         Graphics2D g = (Graphics2D)graphics;
+        g.addRenderingHints(new RenderingHints(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON));
 
         //Recalculate dimensions
         final int WIDTH = getWidth();
@@ -50,7 +51,7 @@ public class GameDisplay extends JPanel implements Listeners.MouseListener.Mouse
             g.drawLine(LEFT_OFFSET + offset, TOP_OFFSET, LEFT_OFFSET + offset, HEIGHT - TOP_OFFSET);
         }
 
-        final int PADDING = SIZE / BOARD_SIZE / 7;
+        final int PADDING = SIZE / BOARD_SIZE / 9;
         //Draw pieces
         for(int i = 0; i < GameLogic.BOARD_SIZE; i++){
             for(int j = 0; j < GameLogic.BOARD_SIZE; j++){
@@ -59,10 +60,10 @@ public class GameDisplay extends JPanel implements Listeners.MouseListener.Mouse
                 
                 switch(logic.getPieceAt(i, j)){
                     case 1:
-                        g.drawOval(circleX, circleY, PIECE_WIDTH, PIECE_WIDTH);
+                        g.drawOval(circleX + PADDING, circleY + PADDING, PIECE_WIDTH - 2 * PADDING, PIECE_WIDTH - 2 * PADDING);
                         break;
                     case 2:
-                    g.fillOval(circleX, circleY, PIECE_WIDTH, PIECE_WIDTH);
+                        g.fillOval(circleX + PADDING, circleY + PADDING, PIECE_WIDTH - 2 * PADDING, PIECE_WIDTH - 2 * PADDING);
                         break;
                     default:break;
                 }
@@ -76,7 +77,7 @@ public class GameDisplay extends JPanel implements Listeners.MouseListener.Mouse
     }
 
     @Override
-    public void onMouseClick(int x, int y, Listeners.MouseListener.Button b) {
+    public void onMouseDown(int x, int y, Listeners.MouseListener.Button b) {
         logic.click(
             GameLogic.BOARD_SIZE * (x - LEFT_OFFSET) / SIZE,
             GameLogic.BOARD_SIZE * (y - TOP_OFFSET) / SIZE
@@ -99,7 +100,7 @@ public class GameDisplay extends JPanel implements Listeners.MouseListener.Mouse
     public void onMouseMove(int x, int y) {/*Empty*/}
 
     @Override
-    public void onMouseDown(int x, int y, Listeners.MouseListener.Button b) {/*Empty*/}
+    public void onMouseClick(int x, int y, Listeners.MouseListener.Button b) {/*Empty*/}
 
     @Override
     public void onMouseUp(int x, int y, Listeners.MouseListener.Button b) {/*Empty*/}
