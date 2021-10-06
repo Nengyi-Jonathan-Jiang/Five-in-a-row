@@ -8,5 +8,6 @@ public class Util {
             this.first = first;
             this.second = second;
         }
+        public String toString(){return "Pair(" + first + ", " + second + ")";}
     }
 }

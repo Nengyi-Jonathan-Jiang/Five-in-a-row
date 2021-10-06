@@ -1,4 +1,6 @@
 import java.awt.*;
+
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -69,6 +71,13 @@ public class GameDisplay extends JPanel implements Listeners.MouseListener.Mouse
                 }
             }
         }
+    }
+
+    public void alertWin(){
+        JOptionPane.showMessageDialog(getParent(), "You Win!");
+    }
+    public void alertLose(){
+        JOptionPane.showMessageDialog(getParent(), "You Lose!");
     }
 
     @Override
