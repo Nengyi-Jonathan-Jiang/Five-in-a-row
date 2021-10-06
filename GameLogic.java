@@ -79,6 +79,7 @@ public class GameLogic {
     private void restartGame() {
         for(int[] i : board) java.util.Arrays.fill(i,0);
         this.state = STATES.PLAYER_MOVE;
+        display.repaint();
     }
 
     public int gameWon(){

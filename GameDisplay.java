@@ -72,7 +72,7 @@ public class GameDisplay extends JPanel implements Listeners.MouseListener.Mouse
     }
 
     @Override
-    public void onKeyTyped(int keyCode) {
+    public void onKeyPressed(int keyCode) {
         logic.onKey(keyCode);
     }
 
@@ -87,7 +87,7 @@ public class GameDisplay extends JPanel implements Listeners.MouseListener.Mouse
     //#region unused methods from Mouse/Key Observer
 
     @Override
-    public void onKeyPressed(int keyCode) {/*Empty*/}
+    public void onKeyTyped(int keyCode) {/*Empty*/}
 
     @Override
     public void onKeyReleased(int keyCode) {/*Empty*/}

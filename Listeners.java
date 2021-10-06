@@ -24,20 +24,23 @@ public class Listeners {
 
             c.addKeyListener(new java.awt.event.KeyListener(){
                 public void keyPressed(KeyEvent e){
-                    keys.put(e.getKeyCode(),true);
+                    int keyCode = e.getKeyCode();
+                    keys.put(keyCode,true);
                     for(KeyObserver o : observers.values()){
-                        o.onKeyPressed(e.getKeyCode());
+                        o.onKeyPressed(keyCode);
                     }
                 }
                 public void keyReleased(KeyEvent e){
-                    keys.put(e.getKeyCode(),false);
+                    int keyCode = e.getKeyCode();
+                    keys.put(keyCode,false);
                     for(KeyObserver o : observers.values()){
-                        o.onKeyReleased(e.getKeyCode());
+                        o.onKeyReleased(keyCode);
                     }
                 }
                 public void keyTyped(KeyEvent e){
+                    int keyCode = e.getKeyCode();
                     for(KeyObserver o : observers.values()){
-                        o.onKeyTyped(e.getKeyCode());
+                        o.onKeyTyped(keyCode);
                     }
                 }
             });
