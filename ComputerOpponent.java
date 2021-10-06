@@ -1,6 +1,6 @@
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.stream.*;
+import java.util.Collections;
 
 public class ComputerOpponent {
     
@@ -43,6 +43,51 @@ public class ComputerOpponent {
 
     
     public void move(int[][]board){
-
+		int score = 0;
+		String rows = rows(board),
+			columns = cols(board),
+			diag1   = diagonals(board,false),
+			diag2   = diagonals(board,true);
+		for(Map.Entry<String,Integer> a: SCORING_MAP.entrySet()){
+			//int count = 
+			rows.replaceAll(a.getKey(), "!");
+		}
+		//int score = diagonals(board,false).matches()
     }
+
+
+	private static final char[] m = {'_','X','O'};
+	private String diagonals(int[][] arr, boolean direction){
+		StringBuilder res = new StringBuilder();
+		int i,j,x,y,l = arr.length;
+		for (i = l - 1; i > 0; i--) {
+			for (j = 0, x = i; x < l; j++, x++)
+				res.append(m[arr[direction ? l - x - 1 : x][j]]);
+			res.append('|');
+		}
+		for (i = 0; i < l; i++) {
+			for (j = 0, y = i; y < l; j++, y++)
+				res.append(m[arr[direction ? l - j - 1 : j][y]]);
+			res.append('|');
+		}
+		return res.toString();
+	}
+	private String rows(int[][] arr){
+		StringBuilder res = new StringBuilder();
+		int i,j,l = arr.length;
+		for(i = 0; i < l; i++){
+			for(j = 0; j < l; j++) res.append(m[arr[i][j]]);
+			res.append('|');
+		}
+		return res.toString();
+	}
+	private String cols(int[][] arr){
+		StringBuilder res = new StringBuilder();
+		int i,j,l = arr.length;
+		for(i = 0; i < l; i++){
+			for(j = 0; j < l; j++) res.append(m[arr[j][i]]);
+			res.append('|');
+		}
+		return res.toString();
+	}
 }
