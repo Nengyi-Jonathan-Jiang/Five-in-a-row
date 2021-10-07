@@ -1,18 +1,20 @@
 import java.awt.event.KeyEvent;
-import java.util.Arrays;
+import java.util.*;
 
 public class GameLogic {
-    private GameDisplay display;
+    private final GameDisplay display;
 
     public static final int BOARD_SIZE = 13;
 
-    private int[][] board = new int[BOARD_SIZE][BOARD_SIZE];
+    public enum BOARD_CELL{EMPTY,PLAYER,OPPONENT}
+    private BOARD_CELL[][] board = new BOARD_CELL[BOARD_SIZE][BOARD_SIZE];
 
-    private ComputerOpponent opponent;
+    private final ComputerOpponent opponent;
 
     public GameLogic(GameDisplay disp){
         opponent = new ComputerOpponent(this);
         display = disp;
+        resetBoard();
     }
 
 
@@ -24,12 +26,12 @@ public class GameLogic {
     }
 
     public void click(int x, int y) {
-        if(x < 0 || x >= BOARD_SIZE || y < 0 || y >= BOARD_SIZE || board[x][y] > 0) return;
+        if(x < 0 || x >= BOARD_SIZE || y < 0 || y >= BOARD_SIZE || board[x][y] != BOARD_CELL.EMPTY) return;
         playerMove(x, y);
     }
 
     private void playerMove(int x, int y) {
-        board[x][y] = 1;
+        board[x][y] = BOARD_CELL.PLAYER;
         if(gameWon() == 1){
             display.alertWin();
             resetBoard();
@@ -48,7 +50,7 @@ public class GameLogic {
     }
 
     private void resetBoard() {
-        for(int[] i : board) java.util.Arrays.fill(i,0);
+        for(var i : board) java.util.Arrays.fill(i,BOARD_CELL.EMPTY);
     }
 
     public int gameWon(){
@@ -63,41 +65,44 @@ public class GameLogic {
         ? 2: 0;
     }
 
-    public int getPieceAt(int x, int y){return board[x][y];}
-    public boolean hasPieceAt(int x, int y){return board[x][y] > 0;}
-    public void setPieceAt(ComputerOpponent o,int x, int y, int val){if(o == opponent) board[x][y] = val;}
-    public boolean isEmpty(){return Arrays.stream(board).flatMapToInt(Arrays::stream).sum() == 0;}
+    public BOARD_CELL getPieceAt(int x, int y){return board[x][y];}
+    public boolean hasPieceAt(int x, int y){return board[x][y] != BOARD_CELL.EMPTY;}
+    public void setPieceAt(ComputerOpponent o,int x, int y, BOARD_CELL val){if(o == opponent) board[x][y] = val;}
+    public boolean isEmpty(){
+        for(var i : board) for(var j : i) if(j !=  BOARD_CELL.EMPTY) return false;
+        return true;
+    }
 
-    private static final char[] m = {'_','X','O'};
+    private static final Map<BOARD_CELL,Character> m = Util.toMap(new Object[][] {{BOARD_CELL.EMPTY,"_"},{BOARD_CELL.PLAYER,"X"},{BOARD_CELL.OPPONENT,"O"},});
 	public String getDiagonals(boolean direction){
 		StringBuilder res = new StringBuilder();
 		int i,j,x,y,l = BOARD_SIZE;
 		for (i = l - 1; i > 0; i--) {
 			for (j = 0, x = i; x < l; j++, x++)
-				res.append(m[board[direction ? l - x - 1 : x][j]]);
+				res.append(m.get(board[direction ? l - x - 1 : x][j]));
 			res.append('|');
 		}
 		for (i = 0; i < l; i++) {
 			for (j = 0, y = i; y < l; j++, y++)
-				res.append(m[board[direction ? l - j - 1 : j][y]]);
+				res.append(m.get(board[direction ? l - j - 1 : j][y]));
 			res.append('|');
 		}
 		return res.toString();
 	}
 	public String getRows(){
-		StringBuilder res = new StringBuilder();
+		var res = new StringBuilder();
 		int i,j,l = BOARD_SIZE;
 		for(i = 0; i < l; i++){
-			for(j = 0; j < l; j++) res.append(m[board[i][j]]);
+			for(j = 0; j < l; j++) res.append(m.get(board[i][j]));
 			res.append('|');
 		}
 		return res.toString();
 	}
 	public String getCols(){
-		StringBuilder res = new StringBuilder();
+		var res = new StringBuilder();
 		int i,j,l = BOARD_SIZE;
 		for(i = 0; i < l; i++){
-			for(j = 0; j < l; j++) res.append(m[board[j][i]]);
+			for(j = 0; j < l; j++) res.append(m.get(board[j][i]));
 			res.append('|');
 		}
 		return res.toString();
