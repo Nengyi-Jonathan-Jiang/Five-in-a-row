@@ -3,9 +3,6 @@ import java.awt.event.KeyEvent;
 public class GameLogic {
     private GameDisplay display;
 
-    public enum STATES{PLAYER_MOVE, PLAYER_WIN, PLAYER_LOSE}
-    private STATES state = STATES.PLAYER_MOVE;
-
     public static final int BOARD_SIZE = 13;
 
     private int[][] board = new int[BOARD_SIZE][BOARD_SIZE];
@@ -19,56 +16,22 @@ public class GameLogic {
 
 
     public void onKey(int keycode){
-        switch(state){
-            case PLAYER_MOVE:
-                if(keycode == KeyEvent.VK_R){
-                    resetBoard();
-                    awaitPlayerMove();
-                }
-                break;
-
-            case PLAYER_WIN:
-                resetBoard();
-                opponentMove();
-                break;
-            case PLAYER_LOSE:
-                resetBoard();
-                awaitPlayerMove();
-                break;
-        }    
-    }
-
-    public void click(int x, int y) {
-        switch(state){
-            case PLAYER_MOVE:
-                if(x < 0 || x >= BOARD_SIZE || y < 0 || y >= BOARD_SIZE) return;
-                playerMove(x, y);
-                break;
-
-            case PLAYER_WIN:
-                resetBoard();
-                opponentMove();
-                break;
-            case PLAYER_LOSE:
-                resetBoard();
-                awaitPlayerMove();
-                break;
+        if(keycode == KeyEvent.VK_R){
+            resetBoard();
+            display.repaint();
         }
     }
 
-    private void awaitPlayerMove(){
-        this.state = STATES.PLAYER_MOVE;
-        display.repaint();
+    public void click(int x, int y) {
+        if(x < 0 || x >= BOARD_SIZE || y < 0 || y >= BOARD_SIZE || board[x][y] > 0) return;
+        playerMove(x, y);
     }
 
     private void playerMove(int x, int y) {
-        board[x][y] = 1 - board[x][y];
-        switch(gameWon()){
-            case 1:
-                this.state = STATES.PLAYER_WIN;
-                display.alertWin();
-                break;
-            default: break;
+        board[x][y] = 1;
+        if(gameWon() == 1){
+            display.alertWin();
+            resetBoard();
         }
         display.repaint();
         opponentMove();
@@ -76,14 +39,9 @@ public class GameLogic {
 
     private void opponentMove(){
         opponent.move(board);
-        switch(gameWon()){
-            case 2:
-                this.state = STATES.PLAYER_LOSE;
-                display.alertLose();
-                break;
-            default:
-                this.state = STATES.PLAYER_MOVE;
-                break;
+        if(gameWon() == 2){
+            display.alertLose();
+            resetBoard();
         }
         display.repaint();
     }
@@ -93,21 +51,20 @@ public class GameLogic {
     }
 
     public int gameWon(){
-        return ( getRows().matches(".*XXXXX.*")
-              || getCols().matches(".*XXXXX.*")
-              || getDiagonals(false).matches(".*XXXXX.*")
-              || getDiagonals(true ).matches(".*XXXXX.*")
-        ) ? 1 : ( getRows().matches(".*OOOOO.*")
-               || getCols().matches(".*OOOOO.*")
-               || getDiagonals(false).matches(".*OOOOO.*")
-               || getDiagonals(true ).matches(".*OOOOO.*")
-        ) ? 2: 0;
+        return getRows().matches(".*XXXXX.*")
+            || getCols().matches(".*XXXXX.*")
+            || getDiagonals(false).matches(".*XXXXX.*")
+            || getDiagonals(true ).matches(".*XXXXX.*")
+        ? 1 :  getRows().matches(".*OOOOO.*")
+            || getCols().matches(".*OOOOO.*")
+            || getDiagonals(false).matches(".*OOOOO.*")
+            || getDiagonals(true ).matches(".*OOOOO.*")
+        ? 2: 0;
     }
 
-    public STATES getState(){return state;}
     public int getPieceAt(int x, int y){return board[x][y];}
-    private static final char[] m = {'_','X','O'};
 
+    private static final char[] m = {'_','X','O'};
 	public String getDiagonals(boolean direction){
 		StringBuilder res = new StringBuilder();
 		int i,j,x,y,l = BOARD_SIZE;
