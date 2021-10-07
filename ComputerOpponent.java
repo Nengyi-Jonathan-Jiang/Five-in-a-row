@@ -1,15 +1,14 @@
-// import java.util.Map;
 import java.util.stream.*;
 import java.util.*;
 
 public class ComputerOpponent {
     
-	private GameLogic logic;
+	private final GameLogic logic;
 
     //This is where the magic happens - tells the computer how advantageous a given
     //configuration is
-    private static final Map<String, Integer> SCORING_MAP = Stream.of(new Object[][] {
-    //region patterns and their corresponding scores
+    private static final Map<String, Integer> SCORING_MAP = Util.toMap(new Object[][] {
+    //#region# patterns and their corresponding scores
 		
 		//Guaranteed win for computer immediately
 	    	{"OOOOO", 1000000000},
@@ -51,8 +50,8 @@ public class ComputerOpponent {
 		//Don't go in random places
 			{"OX", 1},
 			{"XO", 1}
-        //endregion
-    }).collect(Collectors.toMap(data -> (String) data[0], data -> (Integer) data[1]));
+	//#endregion#
+    });
 
 
 	public ComputerOpponent(GameLogic logic){this.logic = logic;}
@@ -62,7 +61,7 @@ public class ComputerOpponent {
 
 		//If board is empty, go in middle space
 		if(logic.isEmpty()){
-			logic.setPieceAt(this, l / 2, l / 2, 2); return;
+			logic.setPieceAt(this, l / 2, l / 2, GameLogic.BOARD_CELL.OPPONENT); return;
 		}
 
 		//Store best moves & score so far
@@ -74,7 +73,7 @@ public class ComputerOpponent {
 			if(logic.hasPieceAt(i, j)) continue;
 
 			//Set the space to 2 for now
-			logic.setPieceAt(this, i, j, 2);
+			logic.setPieceAt(this, i, j, GameLogic.BOARD_CELL.OPPONENT);
 
 			//See how advantageous the board is
 			int score = score();
@@ -85,18 +84,18 @@ public class ComputerOpponent {
 				bestMoves.add(new Util.Pair<>(i, j));
 				bestScore = score;
 			}
-			//Otherwise if its just as good as the best board(s), add it the the set of best boards
+			//Otherwise, if it's just as good as the best board(s), add it the set of best boards
 			else if(score == bestScore) bestMoves.add(new Util.Pair<>(i, j));
 
 			//Reset the space to 0
-			logic.setPieceAt(this, i, j, 0);
+			logic.setPieceAt(this, i, j, GameLogic.BOARD_CELL.EMPTY);
 		}
 
 		//Find a random move out of the best moves
 		var move = bestMoves.get((int)(Math.random() * bestMoves.size()));
 
 		//Carry out the move
-		logic.setPieceAt(this, move.first, move.second, 2);
+		logic.setPieceAt(this, move.first, move.second, GameLogic.BOARD_CELL.OPPONENT);
 	}
 
 	//Find out how advantageous a given board configuration is
@@ -106,7 +105,7 @@ public class ComputerOpponent {
 		String s = logic.getRows() + logic.getCols() + logic.getDiagonals(true) + logic.getDiagonals(false);
 		//For each regex
 		for(Map.Entry<String,Integer> a: SCORING_MAP.entrySet()){
-			//Count occurences
+			//Count occurrences of each regex
 			int count = 0;
 			for(char c: s.replaceAll(a.getKey(), "!").toCharArray()) if(c == '!') count++;
 			//Multiply by score per match
