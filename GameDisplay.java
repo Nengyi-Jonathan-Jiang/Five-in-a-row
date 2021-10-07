@@ -6,7 +6,7 @@ import javax.swing.Timer;
 
 public class GameDisplay extends JPanel implements Listeners.MouseListener.MouseObserver, Listeners.KeyListener.KeyObserver{
 
-    private transient GameLogic logic;
+    private transient final GameLogic logic;
     private int SIZE = 800;
     private int LEFT_OFFSET = 0;
     private int TOP_OFFSET = 0;
@@ -23,6 +23,7 @@ public class GameDisplay extends JPanel implements Listeners.MouseListener.Mouse
         new Timer(10, e -> repaint()).start();
     }
 
+    //Called every time the display needs to update
     @Override
     public void paint(Graphics graphics) {
         //Call super.paint and cast graphics to Graphics2D
@@ -42,12 +43,13 @@ public class GameDisplay extends JPanel implements Listeners.MouseListener.Mouse
 
         //Paint board background
         g.setColor(new Color(200,200,200));
+        //g.setColor(Color.WHITE);
         g.fillRect(LEFT_OFFSET,TOP_OFFSET,SIZE,SIZE);
 
         g.setColor(Color.BLACK);
 
         //Draw grid
-        for(int i = 1; i < BOARD_SIZE; i++){
+        for(int i = 0; i <= BOARD_SIZE; i++){
             int offset =  i * SIZE / BOARD_SIZE;
             g.drawLine(LEFT_OFFSET, TOP_OFFSET + offset, WIDTH - LEFT_OFFSET, TOP_OFFSET + offset);
             g.drawLine(LEFT_OFFSET + offset, TOP_OFFSET, LEFT_OFFSET + offset, HEIGHT - TOP_OFFSET);
@@ -61,10 +63,10 @@ public class GameDisplay extends JPanel implements Listeners.MouseListener.Mouse
                 int circleY = TOP_OFFSET  + j * SIZE / BOARD_SIZE;
                 
                 switch(logic.getPieceAt(i, j)){
-                    case 1:
+                    case PLAYER:
                         g.drawOval(circleX + PADDING, circleY + PADDING, PIECE_WIDTH - 2 * PADDING, PIECE_WIDTH - 2 * PADDING);
                         break;
-                    case 2:
+                    case OPPONENT:
                         g.fillOval(circleX + PADDING, circleY + PADDING, PIECE_WIDTH - 2 * PADDING, PIECE_WIDTH - 2 * PADDING);
                         break;
                     default:break;
@@ -93,7 +95,7 @@ public class GameDisplay extends JPanel implements Listeners.MouseListener.Mouse
         );
     }
 
-    //#region unused methods from Mouse/Key Observer
+    //#region# unused methods from Mouse/Key Observer interfaces
 
     @Override
     public void onKeyTyped(int keyCode) {/*Empty*/}
@@ -120,5 +122,5 @@ public class GameDisplay extends JPanel implements Listeners.MouseListener.Mouse
     @Override
     public void onMouseExited() {/*Empty*/}
 
-    //#endregion
+    //#endregion#
 }
