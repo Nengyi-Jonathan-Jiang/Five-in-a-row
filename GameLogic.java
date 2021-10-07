@@ -1,4 +1,5 @@
 import java.awt.event.KeyEvent;
+import java.util.Arrays;
 
 public class GameLogic {
     private GameDisplay display;
@@ -38,7 +39,7 @@ public class GameLogic {
     }
 
     private void opponentMove(){
-        opponent.move(board);
+        opponent.move();
         if(gameWon() == 2){
             display.alertLose();
             resetBoard();
@@ -63,6 +64,9 @@ public class GameLogic {
     }
 
     public int getPieceAt(int x, int y){return board[x][y];}
+    public boolean hasPieceAt(int x, int y){return board[x][y] > 0;}
+    public void setPieceAt(ComputerOpponent o,int x, int y, int val){if(o == opponent) board[x][y] = val;}
+    public boolean isEmpty(){return Arrays.stream(board).flatMapToInt(Arrays::stream).sum() == 0;}
 
     private static final char[] m = {'_','X','O'};
 	public String getDiagonals(boolean direction){
